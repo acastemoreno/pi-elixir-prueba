@@ -48,6 +48,6 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 config :prueba, Prueba.Pi.HttpClient,
-  url: "https://pisrv1.controlsi.com.pe/piwebapi/",
+  url: "https://192.168.1.211/piwebapi/",
   user: "dev",
   password: "Rockwell01"

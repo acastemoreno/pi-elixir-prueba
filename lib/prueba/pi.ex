@@ -12,20 +12,32 @@ defmodule Prueba.Pi do
     GenServer.call(__MODULE__, {:get_by_path, path})
   end
 
-  def get_by_path(path) do
+  def get_by_path(_path) do
     {:error, "Path no valido"}
   end
 
   # Callbacks
 
   @impl true
-  def handle_call({:get_by_path, path}, _from, state) when state[path] != nil do
-    {:reply, state, state}
+  def init(args) do
+    {:ok, args}
   end
 
   @impl true
   def handle_call({:get_by_path, path}, _from, state) do
-    HttpClient.
-    {:reply, state, state}
+    {_webid, value} = Map.get(state, path)
+                      |> get_webid_value(path)
+    {:reply, value, state |> Map.put(path, value)}
   end
+
+  # Helper Functions
+
+  defp get_webid_value(nil, path) do
+    webid = HttpClient.get_webid(path)
+    get_webid_value(%{webid: webid}, path)
+  end
+  defp get_webid_value(%{webid: webid}, path) do
+    {webid, HttpClient.current_value(path)}
+  end
+
 end

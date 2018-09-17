@@ -2,11 +2,11 @@ defmodule Prueba.Pi.HttpClient do
   use HTTPoison.Base
   @pi Application.get_env(:prueba, __MODULE__)
   @expected_fields ~w(
-   Timestamp UnitsAbbreviation Good Questionable Substituted Annotated Value
+   Timestamp UnitsAbbreviation Good Questionable Substituted Annotated Value WebId
   )
 
   def get_webid(path) do
-    ("elements?elements=" <> path<>";selectedFields=WebId")
+    ("elements?elements=" <> path)
     |> get!(headers(), options())
   end
 
@@ -33,6 +33,7 @@ defmodule Prueba.Pi.HttpClient do
   end
 
   def process_response_body(body) do
+    IO.inspect(body)
     body
     |> Poison.decode!()
     |> Map.take(@expected_fields)
