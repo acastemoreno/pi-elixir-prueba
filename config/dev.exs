@@ -46,3 +46,8 @@ config :logger, :console, format: "[$level] $message\n"
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+config :prueba, Prueba.Pi.HttpClient,
+  url: "https://pisrv1.controlsi.com.pe/piwebapi/",
+  user: "dev",
+  password: "Rockwell01"

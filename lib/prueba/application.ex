@@ -12,6 +12,7 @@ defmodule Prueba.Application do
       supervisor(PruebaWeb.Endpoint, []),
       # Start your own worker by calling: Prueba.Worker.start_link(arg1, arg2, arg3)
       # worker(Prueba.Worker, [arg1, arg2, arg3]),
+      worker(Prueba.Pi, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

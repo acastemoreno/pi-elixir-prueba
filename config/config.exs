@@ -21,9 +21,4 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 
-config :prueba, Prueba.Pi.HttpClient,
-  url: "https://pisrv1.controlsi.com.pe/piwebapi/",
-  user: "dev",
-  password: "Rockwell01"
-
 import_config "#{Mix.env}.exs"
