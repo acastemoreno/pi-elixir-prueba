@@ -1,4 +1,5 @@
 <%= form_for @conn, pi_path(@conn, :attribute_form_post), [as: :form], fn f -> %>
-  <%= text_input f, :tag %>
+  <%= text_input f, :path %>
+  <%= select f, :operation, ["WebId": "webid", "Value": "value"] %>
   <%= submit "Search" %>
 <% end %>
