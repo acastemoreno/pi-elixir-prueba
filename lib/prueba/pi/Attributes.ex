@@ -52,15 +52,12 @@ defmodule Prueba.Pi.Attributes do
   defp request_webid_and_update_state_if_necesary(nil, path, state) do
     case get_webid_and_status(%{path: path}) do
       %{webid: webid, status_code: 200} ->
-        IO.puts("WebID se actualiza")
         {{:ok, webid}, state |> Map.put(path, webid)}
       _ ->
-        IO.puts("bad_request")
         {{:error, "bad_request"}, state}
     end
   end
   defp request_webid_and_update_state_if_necesary(webid, _path, state) do
-      IO.puts("WebID no se actualiza")
      {{:ok, webid}, state}
   end
 
