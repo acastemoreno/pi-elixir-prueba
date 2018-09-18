@@ -47,7 +47,8 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-config :prueba, Prueba.Pi.HttpClient,
+config :prueba, Prueba.Pi,
   url: "https://192.168.1.211/piwebapi/",
+  url_websocket: "wss://192.168.1.211/piwebapi/",
   user: "dev",
   password: "Rockwell01"

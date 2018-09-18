@@ -1,14 +1,15 @@
 defmodule Prueba.Pi do
-  use Supervisor
+  use Supervisor, type: :supervisor
 
-  def start_link() do
+  def start_link(_args) do
     Supervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   @impl true
   def init(_arg) do
     children = [
-      worker(Prueba.Pi.Attributes, [])
+      {Prueba.Pi.Attributes, []},
+      {Prueba.Pi.HttpClient, []}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

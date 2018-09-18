@@ -1,31 +1,16 @@
 defmodule Prueba.Pi.HttpClient do
-  use HTTPoison.Base
-  @pi Application.get_env(:prueba, __MODULE__)
-  @expected_fields ~w(
-   Timestamp UnitsAbbreviation Good Questionable Substituted Annotated Value WebId
-  )
+  use Supervisor, type: :supervisor
 
-  def token do
-    (@pi[:user] <> ":" <> @pi[:password])
-    |> Base.encode64()
+  def start_link(_arg) do
+    Supervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def headers do
-    [Authorization: "Basic #{token()}", "User-Agent": "Elixir", "Cache-Control": "no-cache", "Accept": "Application/json; Charset=utf-8"]
-  end
+  @impl true
+  def init(_arg) do
+    children = [
+      {Prueba.Pi.HttpClient.DynamicWebsocket, []}
+    ]
 
-  def options do
-    [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 1000]
-  end
-
-  def process_url(url) do
-    (@pi[:url] <> url) |> URI.encode()
-  end
-
-  def process_response_body(body) do
-    body
-    |> Poison.decode!()
-    |> Map.take(@expected_fields)
-    |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end

@@ -1,10 +1,10 @@
 defmodule Prueba.Pi.Attributes do
-  use GenServer
-  alias Prueba.Pi.HttpClient
-  import Prueba.Pi.HttpClient, only: [headers: 0, options: 0]
+  use GenServer, type: :worker
+  alias Prueba.Pi.HttpClient.Request
+  import Prueba.Pi.HttpClient.Request, only: [headers: 0, options: 0]
 
   # Client
-  def start_link() do
+  def start_link(_arg) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
@@ -64,15 +64,20 @@ defmodule Prueba.Pi.Attributes do
   defp get_webid_and_status(%{path: path}) do
     %{body: body, status_code: status_code} =
       ("attributes?path=" <> path <>"&selectedFields=WebId")
-      |> HttpClient.get!(headers(), options())
+      |> Request.get!(headers(), options())
     %{webid: body |> Keyword.get(:"WebId"), status_code: status_code}
   end
 
   defp get_current_value(%{webid: webid}) do
     %{body: body, status_code: 200} =
       ("streams/" <> webid <>"/end")
-      |> HttpClient.get!(headers(), options())
-    body |> Keyword.get(:"Value")
+      |> Request.get!(headers(), options())
+    case body |> Keyword.get(:"Value") do
+      value when not (value |> is_map()) ->
+        value
+      value ->
+        Map.get(value, "Value")
+    end
   end
 
 end

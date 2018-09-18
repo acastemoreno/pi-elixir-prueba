@@ -19,7 +19,7 @@ defmodule Prueba.Mixfile do
   def application do
     [
       mod: {Prueba.Application, []},
-      extra_applications: [:logger, :runtime_tools, :httpoison]
+      extra_applications: [:logger, :runtime_tools, :httpoison, :websockex]
     ]
   end
 
@@ -41,7 +41,8 @@ defmodule Prueba.Mixfile do
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 0.12"},
       {:distillery, "~> 2.0"},
-      {:httpoison, "~> 1.0"}
+      {:httpoison, "~> 1.0"},
+      {:websockex, "~> 0.4.0"}
     ]
   end
 end
