@@ -18,6 +18,8 @@ defmodule PruebaWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+    get("/attribute", PiController, :attribute_form)
+    post("/attribute", PiController, :attribute_form_post)
   end
 
   # Other scopes may use custom stacks.

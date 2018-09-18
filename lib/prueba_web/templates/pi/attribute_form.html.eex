@@ -1,0 +1,4 @@
+<%= form_for @conn, pi_path(@conn, :attribute_form_post), [as: :form], fn f -> %>
+  <%= text_input f, :tag %>
+  <%= submit "Search" %>
+<% end %>
