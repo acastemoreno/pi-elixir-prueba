@@ -10,7 +10,7 @@ defmodule Prueba.Pi.HttpClient.Websocket do
   end
 
   def handle_frame({type, msg}, state) do
-    IO.puts "Received Message - Type: #{inspect type} -- Message: #{inspect msg}"
+    IO.puts "Received Message - Type: #{inspect type} -- Message: #{inspect msg |> Poison.decode!()}"
     {:ok, state}
   end
 

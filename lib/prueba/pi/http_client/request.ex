@@ -26,6 +26,5 @@ defmodule Prueba.Pi.HttpClient.Request do
     body
     |> Poison.decode!()
     |> Map.take(@expected_fields)
-    |> Enum.map(fn {k, v} -> {String.to_atom(k), v} end)
   end
 end

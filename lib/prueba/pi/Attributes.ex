@@ -52,12 +52,12 @@ defmodule Prueba.Pi.Attributes do
   defp request_webid_and_update_state_if_necesary(nil, path, state) do
     case get_webid_and_status(%{path: path}) do
       %{webid: webid, status_code: 200} ->
-        {{:ok, webid}, state |> Map.put(path, webid)}
+        {{:ok, webid}, state |> Map.put(path, %{webid: webid})}
       _ ->
         {{:error, "bad_request"}, state}
     end
   end
-  defp request_webid_and_update_state_if_necesary(webid, _path, state) do
+  defp request_webid_and_update_state_if_necesary(%{webid: webid}, _path, state) do
      {{:ok, webid}, state}
   end
 
@@ -65,14 +65,14 @@ defmodule Prueba.Pi.Attributes do
     %{body: body, status_code: status_code} =
       ("attributes?path=" <> path <>"&selectedFields=WebId")
       |> Request.get!(headers(), options())
-    %{webid: body |> Keyword.get(:"WebId"), status_code: status_code}
+    %{webid: body |> Map.get("WebId"), status_code: status_code}
   end
 
   defp get_current_value(%{webid: webid}) do
     %{body: body, status_code: 200} =
       ("streams/" <> webid <>"/end")
       |> Request.get!(headers(), options())
-    case body |> Keyword.get(:"Value") do
+    case body |> Map.get("Value") do
       value when not (value |> is_map()) ->
         value
       value ->
