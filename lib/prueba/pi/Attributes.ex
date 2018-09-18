@@ -57,7 +57,7 @@ defmodule Prueba.Pi.Attributes do
   defp request_channel({{:ok, webid}, state}, path) do
     case state |> get_in([path, :channel_pid]) do
       nil ->
-        {:ok, channel_pid} = Prueba.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <>"/channel")
+        {:ok, channel_pid} = Prueba.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <>"/channel?includeInitialValues=true&selectedFields=Items")
         state = state |> put_in([path, :channel_pid], channel_pid)
         {{:ok, "Conexión a Pi creado exitosamente"}, state}
       channel_pid when channel_pid |> is_pid() ->

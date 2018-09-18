@@ -11,11 +11,9 @@ defmodule Prueba.Pi.HttpClient.Websocket do
     WebSockex.start_link(conn, __MODULE__, [])
   end
 
-  def handle_frame({type, msg}, state) do
-    IO.puts(
-      "Received Message - Type: #{inspect(type)} -- Message: #{inspect(msg |> Poison.decode!())}"
-    )
-
+  def handle_frame({_type, msg}, state) do
+    [%{"Items" => items}] = msg |> Poison.decode!() |> Map.get("Items")
+    items |> Enum.map(&(Map.get(&1, "Value")|> IO.inspect))
     {:ok, state}
   end
 
