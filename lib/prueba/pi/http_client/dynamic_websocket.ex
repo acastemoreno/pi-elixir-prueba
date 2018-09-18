@@ -15,8 +15,6 @@ defmodule Prueba.Pi.HttpClient.DynamicWebsocket do
 
   @impl true
   def init(_initial_arg) do
-    DynamicSupervisor.init(
-      strategy: :one_for_one
-    )
+    DynamicSupervisor.init(strategy: :one_for_one)
   end
 end

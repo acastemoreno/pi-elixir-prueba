@@ -11,7 +11,12 @@ defmodule Prueba.Pi.HttpClient.Request do
   end
 
   def headers do
-    [Authorization: "Basic #{token()}", "User-Agent": "Elixir", "Cache-Control": "no-cache", "Accept": "Application/json; Charset=utf-8"]
+    [
+      Authorization: "Basic #{token()}",
+      "User-Agent": "Elixir",
+      "Cache-Control": "no-cache",
+      Accept: "Application/json; Charset=utf-8"
+    ]
   end
 
   def options do

@@ -10,8 +10,7 @@ config :prueba, PruebaWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "OhKVFxZ5qpKYN7d8XeLr6Cmy9QcXQf+Rwmtd9KnNXCWfH6gOzL7kVbhJAVf9o4F7",
   render_errors: [view: PruebaWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Prueba.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Prueba.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -21,4 +20,4 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

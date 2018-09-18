@@ -21,6 +21,10 @@ defmodule Prueba.Pi.Attributes do
     {:error, "Path no valido"}
   end
 
+  def init_channel(%{path: path}) when path |> is_bitstring() do
+    GenServer.call(__MODULE__, {:init_channel, %{path: path}})
+  end
+
   # Callbacks
 
   @impl true
@@ -34,15 +38,32 @@ defmodule Prueba.Pi.Attributes do
       |> request_webid_and_update_state_if_necesary(path, state)
     {:reply, response, state}
   end
-
   def handle_call({:value, %{path: path}}, _from, state) do
     {response, state} = Map.get(state, path)
       |> request_webid_and_update_state_if_necesary(path, state)
       |> request_value()
     {:reply, response, state}
   end
+  def handle_call({:init_channel, %{path: path}}, _from, state) do
+    {response, state} = Map.get(state, path)
+      |> request_webid_and_update_state_if_necesary(path, state)
+      |> request_channel(path)
+    {:reply, response, state}
+  end
 
   # Helper Functions
+
+  defp request_channel({{:error, _msg}, _state} = response_state, _path), do: response_state
+  defp request_channel({{:ok, webid}, state}, path) do
+    case state |> get_in([path, :channel_pid]) do
+      nil ->
+        {:ok, channel_pid} = Prueba.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <>"/channel")
+        state = state |> put_in([path, :channel_pid], channel_pid)
+        {{:ok, "Conexión a Pi creado exitosamente"}, state}
+      channel_pid when channel_pid |> is_pid() ->
+        {{:ok, "La conexión a PI ya existia"}, state}
+    end
+  end
 
   defp request_value({{:error, _msg}, _state} = response_state), do: response_state
   defp request_value({{:ok, webid}, state}) do

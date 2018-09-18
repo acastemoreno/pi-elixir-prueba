@@ -7,9 +7,10 @@ defmodule PruebaWeb.PiController do
 
   def attribute_form_post(conn, %{"form" => %{"path" => path, "operation" => operation}}) do
     atom = String.to_atom(operation)
+
     case apply(Prueba.Pi.Attributes, atom, [%{path: path}]) do
-      {:ok, msg} -> text conn, msg
-      {:error, msg} -> text conn, msg
+      {:ok, msg} -> text(conn, msg)
+      {:error, msg} -> text(conn, msg)
     end
   end
 end
