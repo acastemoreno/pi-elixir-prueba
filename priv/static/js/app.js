@@ -1737,13 +1737,51 @@ var socket = new _phoenix.Socket("/socket", { params: { token: window.userToken 
 
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/web/endpoint.ex":
+var chartData = [];
+
+var chart = AmCharts.makeChart("chartdiv", {
+  "type": "serial",
+  "theme": "light",
+  "dataDateFormat": "YYYY-MM-DD",
+  "valueAxes": [{
+    "id": "v1",
+    "position": "left"
+  }],
+  "graphs": [{
+    "id": "g1",
+    "bullet": "round",
+    "valueField": "value",
+    "balloonText": "[[category]]: [[value]]"
+  }],
+  "categoryField": "date",
+  "categoryAxis": {
+    "parseDates": true,
+    "equalSpacing": true,
+    "dashLength": 1,
+    "minorGridEnabled": true
+  },
+  "dataProvider": chartData
+});
+
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-var channel = socket.channel("attributes:\\\\PISRV1\\Default\\Linea 1\\Pump 1|Caudal", {});
+var channel = socket.channel("attributes:\\\\PISRV1\\Default\\Linea 2\\Pump 4|Caudal", {});
 
 channel.on("new_msg", function (payload) {
-  console.log(payload);
+  var newData = JSON.parse(JSON.stringify(payload));
+  chartData.push(newData);
+  if (chartData.length > 50) {
+    chartData.splice(0, chartData.length - 50);
+  }
+  chart.validateData();
+  var value = payload["value"];
+  var avalability = document.querySelector("#avalability");
+  avalability.setAttribute("aria-valuenow", value);
+  avalability.setAttribute("style", "width: " + value + "%");
+  avalability.textContent = value + "%";
+  avalability.classList.remove("progress-bar-success", "progress-bar-info", "progress-bar-danger");
+  if (value < 33) avalability.classList.add("progress-bar-danger");else if (value > 66) avalability.classList.add("progress-bar-success");else avalability.classList.add("progress-bar-info");
 });
 
 channel.join().receive("ok", function (resp) {
