@@ -46,8 +46,8 @@ end
 # when running `mix release`, the first release in the file
 # will be used by default
 
-release :prueba do
-  set version: current_version(:prueba)
+release :reporte_pi do
+  set version: current_version(:reporte_pi)
   set applications: [
     :runtime_tools
   ]

@@ -1,4 +1,4 @@
-defmodule PruebaWeb.ChannelCase do
+defmodule ReportePiWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,11 +21,17 @@ defmodule PruebaWeb.ChannelCase do
       use Phoenix.ChannelTest
 
       # The default endpoint for testing
-      @endpoint PruebaWeb.Endpoint
+      @endpoint ReportePiWeb.Endpoint
     end
   end
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ReportePi.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(ReportePi.Repo, {:shared, self()})
+    end
+
     :ok
   end
 end

@@ -6,12 +6,19 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
-config :prueba, PruebaWeb.Endpoint,
+config :reporte_pi, ReportePiWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: []
+  watchers: [
+    node: [
+      "node_modules/brunch/bin/brunch",
+      "watch",
+      "--stdin",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
@@ -30,13 +37,13 @@ config :prueba, PruebaWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :prueba, PruebaWeb.Endpoint,
+config :reporte_pi, ReportePiWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{lib/prueba_web/views/.*(ex)$},
-      ~r{lib/prueba_web/templates/.*(eex)$}
+      ~r{lib/reporte_pi_web/views/.*(ex)$},
+      ~r{lib/reporte_pi_web/templates/.*(eex)$}
     ]
   ]
 
@@ -47,7 +54,16 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-config :prueba, Prueba.Pi,
+# Configure your database
+config :reporte_pi, ReportePi.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "reporte_pi_dev",
+  hostname: "localhost",
+  pool_size: 10
+
+config :reporte_pi, ReportePi.Pi,
   url: "https://192.168.1.211/piwebapi/",
   url_websocket: "wss://192.168.1.211/piwebapi/",
   user: "dev",

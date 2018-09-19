@@ -1,4 +1,4 @@
-defmodule PruebaWeb.ConnCase do
+defmodule ReportePiWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,14 +19,20 @@ defmodule PruebaWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import PruebaWeb.Router.Helpers
+      import ReportePiWeb.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint PruebaWeb.Endpoint
+      @endpoint ReportePiWeb.Endpoint
     end
   end
 
-  setup _tags do
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ReportePi.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(ReportePi.Repo, {:shared, self()})
+    end
+
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end
