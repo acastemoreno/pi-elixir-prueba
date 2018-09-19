@@ -68,7 +68,7 @@ defmodule ReportePi.Pi.Attributes do
     case state |> get_in([path, :channel_pid]) do
       nil ->
         {:ok, channel_pid} =
-          ReportePi.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <> "/channel")
+          ReportePi.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <> "/channel", path)
 
         state = state |> put_in([path, :channel_pid], channel_pid)
         {{:ok, "Conexión a Pi creado exitosamente"}, state}

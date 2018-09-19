@@ -6,10 +6,10 @@ defmodule ReportePi.Pi.HttpClient.DynamicWebsocket do
     DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def start_child(url) do
+  def start_child(url, path) do
     # If MyWorker is not using the new child specs, we need to pass a map:
     # spec = %{id: MyWorker, start: {MyWorker, :start_link, [foo, bar, baz]}}
-    spec = {Websocket, url}
+    spec = {Websocket, url: url, path: path}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 
