@@ -25,7 +25,7 @@ defmodule ReportePiWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", ReportePiWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", ReportePiWeb do
+    pipe_through :api
+  end
 end

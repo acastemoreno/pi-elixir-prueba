@@ -1,5 +1,6 @@
 defmodule ReportePiWeb.PiController do
   use ReportePiWeb, :controller
+  alias ReportePi.Pi
 
   def attribute_form(conn, _params) do
     render(conn, "attribute_form.html")
@@ -8,7 +9,7 @@ defmodule ReportePiWeb.PiController do
   def attribute_form_post(conn, %{"form" => %{"path" => path, "operation" => operation}}) do
     atom = String.to_atom(operation)
 
-    case apply(ReportePi.Pi.Attributes, atom, [%{path: path}]) do
+    case apply(Pi, atom, [%{path: path}]) do
       {:ok, msg} -> text(conn, msg)
       {:error, msg} -> text(conn, msg)
     end
@@ -21,7 +22,7 @@ defmodule ReportePiWeb.PiController do
   def point_form_post(conn, %{"form" => %{"path" => path, "operation" => operation}}) do
     atom = String.to_atom(operation)
 
-    case apply(ReportePi.Pi.Points, atom, [%{path: path}]) do
+    case apply(Pi, atom, [%{path: path}]) do
       {:ok, msg} -> text(conn, msg)
       {:error, msg} -> text(conn, msg)
     end

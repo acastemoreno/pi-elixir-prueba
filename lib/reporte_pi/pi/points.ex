@@ -8,18 +8,12 @@ defmodule ReportePi.Pi.Points do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  def webid(%{path: path}) when path |> is_bitstring() do
+  def webid(%{path: path})  do
     GenServer.call(__MODULE__, {:webid, %{path: path}})
   end
 
-  def webid(_path), do: {:error, "Argumento no valido"}
-
-  def value(%{path: path}) when path |> is_bitstring() do
+  def value(%{path: path}) do
     GenServer.call(__MODULE__, {:value, %{path: path}})
-  end
-
-  def value(_path) do
-    {:error, "Path no valido"}
   end
 
   def init_channel(%{path: path}) when path |> is_bitstring() do
