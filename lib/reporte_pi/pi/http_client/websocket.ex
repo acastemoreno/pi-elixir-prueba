@@ -28,6 +28,6 @@ defmodule ReportePi.Pi.HttpClient.Websocket do
   end
 
   defp get_value_and_broadcast(%{"Value" => value, "Timestamp" => timestamp}, path) do
-    ReportePiWeb.Endpoint.broadcast "attributes:" <> path , "new_msg", %{"value" => value, "date" => timestamp}
+    ReportePiWeb.Endpoint.broadcast "points:" <> path , "new_msg", %{"value" => value, "date" => timestamp}
   end
 end

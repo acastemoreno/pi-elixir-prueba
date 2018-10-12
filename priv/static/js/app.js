@@ -1766,7 +1766,7 @@ var chart = AmCharts.makeChart("chartdiv", {
 socket.connect();
 
 // Now that you are connected, you can join channels with a topic:
-var channel = socket.channel("attributes:\\\\PISRV1\\Default\\Linea 2\\Pump 4|Caudal", {});
+var channel = socket.channel("points:\\\\PISRV1\\SINUSOIDU", {});
 
 channel.on("new_msg", function (payload) {
   var newData = JSON.parse(JSON.stringify(payload));

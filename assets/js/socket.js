@@ -80,7 +80,7 @@ let chart = AmCharts.makeChart("chartdiv", {
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("attributes:\\\\PISRV1\\Default\\Linea 2\\Pump 4|Caudal", {})
+let channel = socket.channel("points:\\\\PISRV1\\SINUSOIDU", {})
 
 channel.on("new_msg", payload => {
   let newData = JSON.parse(JSON.stringify(payload));

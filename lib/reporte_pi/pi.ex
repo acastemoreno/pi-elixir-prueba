@@ -8,8 +8,10 @@ defmodule ReportePi.Pi do
   @impl true
   def init(_arg) do
     children = [
-      {ReportePi.Pi.Attributes, []},
-      {ReportePi.Pi.HttpClient, []}
+      {ReportePi.Pi.HttpClient, []},
+      {ReportePi.Pi.Points, []},
+      {ReportePi.Pi.Attributes, []}
+
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

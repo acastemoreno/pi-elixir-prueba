@@ -13,4 +13,17 @@ defmodule ReportePiWeb.PiController do
       {:error, msg} -> text(conn, msg)
     end
   end
+
+  def point_form(conn, _params) do
+    render(conn, "point_form.html")
+  end
+
+  def point_form_post(conn, %{"form" => %{"path" => path, "operation" => operation}}) do
+    atom = String.to_atom(operation)
+
+    case apply(ReportePi.Pi.Points, atom, [%{path: path}]) do
+      {:ok, msg} -> text(conn, msg)
+      {:error, msg} -> text(conn, msg)
+    end
+  end
 end

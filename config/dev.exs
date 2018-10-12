@@ -58,7 +58,7 @@ config :reporte_pi, ReportePi.Repo,
   pool_size: 10
 
 config :reporte_pi, ReportePi.Pi,
-  url: "https://192.168.1.211/piwebapi/",
-  url_websocket: "wss://192.168.1.211/piwebapi/",
-  user: "dev",
+  url: "https://192.168.1.206/piwebapi/",
+  url_websocket: "wss://192.168.1.206/piwebapi/",
+  user: "Administrator",
   password: "Rockwell01"

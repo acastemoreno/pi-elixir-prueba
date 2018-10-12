@@ -3,6 +3,7 @@ defmodule ReportePiWeb.UserSocket do
 
   ## Channels
   channel "attributes:*", ReportePiWeb.AttributesChannel
+  channel "points:*", ReportePiWeb.PointsChannel
 
   ## Transports
   transport(:websocket, Phoenix.Transports.WebSocket)
