@@ -85,9 +85,9 @@ let channel = socket.channel("points:\\\\PISRV1\\SINUSOIDU", {})
 channel.on("new_msg", payload => {
   let newData = JSON.parse(JSON.stringify(payload));
   chartData.push(newData);
-  if (chartData.length > 50) {
-   chartData.splice(0, chartData.length - 50);
-  }
+//  if (chartData.length > 50) {
+//   chartData.splice(0, chartData.length - 50);
+//  }
   chart.validateData()
   let value = payload["value"]
   let avalability  = document.querySelector("#avalability")

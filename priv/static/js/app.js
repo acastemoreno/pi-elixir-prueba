@@ -1771,9 +1771,9 @@ var channel = socket.channel("points:\\\\PISRV1\\SINUSOIDU", {});
 channel.on("new_msg", function (payload) {
   var newData = JSON.parse(JSON.stringify(payload));
   chartData.push(newData);
-  if (chartData.length > 50) {
-    chartData.splice(0, chartData.length - 50);
-  }
+  //  if (chartData.length > 50) {
+  //   chartData.splice(0, chartData.length - 50);
+  //  }
   chart.validateData();
   var value = payload["value"];
   var avalability = document.querySelector("#avalability");
