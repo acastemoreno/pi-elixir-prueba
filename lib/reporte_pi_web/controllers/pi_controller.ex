@@ -9,7 +9,7 @@ defmodule ReportePiWeb.PiController do
   def attribute_form_post(conn, %{"form" => %{"path" => path, "operation" => operation}}) do
     atom = String.to_atom(operation)
 
-    case apply(Pi, atom, [%{path: path}]) do
+    case apply(Pi, atom, [%{path: path, type: :attributes}]) do
       {:ok, msg} -> text(conn, msg)
       {:error, msg} -> text(conn, msg)
     end
@@ -22,7 +22,7 @@ defmodule ReportePiWeb.PiController do
   def point_form_post(conn, %{"form" => %{"path" => path, "operation" => operation}}) do
     atom = String.to_atom(operation)
 
-    case apply(Pi, atom, [%{path: path}]) do
+    case apply(Pi, atom, [%{path: path, type: :points}]) do
       {:ok, msg} -> text(conn, msg)
       {:error, msg} -> text(conn, msg)
     end

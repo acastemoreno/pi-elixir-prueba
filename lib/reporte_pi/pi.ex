@@ -1,8 +1,7 @@
 defmodule ReportePi.Pi do
   use Supervisor, type: :supervisor
 
-  alias ReportePi.Pi.Points
-  alias ReportePi.Pi.Attributes
+  alias ReportePi.Pi.Sources
 
   def start_link(_args) do
     Supervisor.start_link(__MODULE__, [], name: __MODULE__)
@@ -12,8 +11,7 @@ defmodule ReportePi.Pi do
   def init(_arg) do
     children = [
       {ReportePi.Pi.HttpClient, []},
-      {Points, []},
-      {Attributes, []}
+      {Sources, []},
 
     ]
 
@@ -23,9 +21,9 @@ defmodule ReportePi.Pi do
   def webid(%{path: path} = map) when path |> is_bitstring() do
     case path |> String.contains?("|") do
       true ->
-        Attributes.webid(map)
+        Sources.webid(map)
       false ->
-        Points.webid(map)
+        Sources.webid(map)
     end
   end
 
@@ -34,9 +32,9 @@ defmodule ReportePi.Pi do
   def value(%{path: path} = map) when path |> is_bitstring() do
     case path |> String.contains?("|") do
       true ->
-        Attributes.value(map)
+        Sources.value(map)
       false ->
-        Points.value(map)
+        Sources.value(map)
     end
   end
 

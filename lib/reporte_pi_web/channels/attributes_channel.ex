@@ -1,12 +1,11 @@
 defmodule ReportePiWeb.AttributesChannel do
   use Phoenix.Channel
-  alias ReportePi.Pi.Attributes
+  alias ReportePi.Pi.Sources
 
   def join("attributes:" <> path, _message, socket) do
-    IO.inspect(path)
-    case Attributes.webid(%{path: path}) do
+    case Sources.webid(%{path: path, type: :attributes}) do
       {:ok, _webid} ->
-        Attributes.init_channel(%{path: path})
+        Sources.init_channel(%{path: path, type: :attributes})
         {:ok, socket}
       {:error, reason} ->
         {:error, %{reason: reason}}
