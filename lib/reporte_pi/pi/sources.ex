@@ -30,6 +30,12 @@ defmodule ReportePi.Pi.Sources do
 
   def init_channel(_), do: {:error, "Argumentos no validos"}
 
+  def remove_channel(%{path: path}) when path |> is_bitstring() do
+    GenServer.call(__MODULE__, {:remove_channel, %{path: path}})
+  end
+
+  def remove_channel(_), do: {:error, "Argumentos no validos"}
+
   # Callbacks Functions
 
   @impl true
@@ -41,44 +47,79 @@ defmodule ReportePi.Pi.Sources do
   def handle_call({:webid, %{path: path} = request}, _from, old_state) do
     old_state
       |> get_source(request)
-      |> response_and_update_state(:webid, %{path: path, old_state: old_state})
+      |> webid_and_update_state(%{path: path, old_state: old_state})
   end
 
   def handle_call({:value, %{path: path} = request}, _from, old_state) do
     old_state
       |> get_source(request)
       |> get_value()
-      |> response_and_update_state(:value, %{path: path, old_state: old_state})
+      |> value_and_update_state(%{path: path, old_state: old_state})
   end
 
   def handle_call({:init_channel, %{path: path} = request}, _from, old_state) do
     old_state
       |> get_source(request)
       |> request_channel(path)
-      |> response_and_update_state(:init_channel, %{path: path, old_state: old_state})
+      |> channel_and_update_state(%{path: path, old_state: old_state})
+  end
+
+  def handle_call({:remove_channel, %{path: path} = request}, _from, old_state) do
+    old_state
+      |> get_existing_source(request)
+      |> remove_channel_from_source()
+      |> remove_channel_and_update_state(%{path: path, old_state: old_state})
   end
 
   # Common Helper Functions
-  defp response_and_update_state({:error, message}, _operation, %{old_state: old_state}) do
+  defp webid_and_update_state({:error, message}, %{old_state: old_state}) do
     {:reply, {:error, message}, old_state}
   end
-  defp response_and_update_state({:ok, %{webid: webid} = source, true}, :webid, %{path: path, old_state: old_state}) do
+  defp webid_and_update_state({:ok, %{webid: webid} = source, true}, %{path: path, old_state: old_state}) do
     {:reply, {:ok, webid}, old_state |> Map.put(path, source)}
   end
-  defp response_and_update_state({:ok, %{webid: webid}, false}, :webid, %{old_state: old_state}) do
+  defp webid_and_update_state({:ok, %{webid: webid}, false}, %{old_state: old_state}) do
     {:reply, {:ok, webid}, old_state}
   end
-  defp response_and_update_state({:ok, value, source, true}, :value, %{path: path, old_state: old_state}) do
+
+  defp value_and_update_state({:error, message}, %{old_state: old_state}) do
+    {:reply, {:error, message}, old_state}
+  end
+  defp value_and_update_state({:ok, value, source, true}, %{path: path, old_state: old_state}) do
     {:reply, {:ok, value}, old_state |> Map.put(path, source)}
   end
-  defp response_and_update_state({:ok, value, _source, false}, :value, %{old_state: old_state}) do
+  defp value_and_update_state({:ok, value, _source, false}, %{old_state: old_state}) do
     {:reply, {:ok, value}, old_state}
   end
-  defp response_and_update_state({:ok, channel_pid, source, true}, :init_channel, %{path: path, old_state: old_state}) do
+
+  defp channel_and_update_state({:error, message}, %{old_state: old_state}) do
+    {:reply, {:error, message}, old_state}
+  end
+  defp channel_and_update_state({:ok, channel_pid, source, true}, %{path: path, old_state: old_state}) do
     {:reply, {:ok, channel_pid}, old_state |> Map.put(path, source)}
   end
-  defp response_and_update_state({:ok, channel_pid, _source, false}, :init_channel, %{old_state: old_state}) do
+  defp channel_and_update_state({:ok, channel_pid, _source, false}, %{old_state: old_state}) do
     {:reply, {:ok, channel_pid}, old_state}
+  end
+
+  defp remove_channel_and_update_state({:error, message}, %{old_state: old_state}) do
+    {:reply, {:error, message}, old_state}
+  end
+  defp remove_channel_and_update_state({:ok, source, true}, %{path: path, old_state: old_state}) do
+    {:reply, :ok, old_state |> Map.put(path, source)}
+  end
+  defp remove_channel_and_update_state({:ok, _source, false}, %{old_state: old_state}) do
+    {:reply, :ok, old_state}
+  end
+
+  # Remove Channel Helper Functions
+
+  defp remove_channel_from_source({:error, _msg} = response_state), do: response_state
+  defp remove_channel_from_source({:ok, %{channel_pid: nil} = source}) do
+    {:ok, source, false}
+  end
+  defp remove_channel_from_source({:ok, %{channel_pid: channel_pid} = source}) when channel_pid |> is_pid() do
+    {:ok, source |> Map.put(:channel_pid, nil), true}
   end
 
   # Init Channel Helper Functions
@@ -118,6 +159,10 @@ defmodule ReportePi.Pi.Sources do
     old_state
       |> Map.get(path)
       |> request_source_if_necesary(request)
+  end
+
+  defp get_existing_source(old_state, %{path: path}) do
+    {:ok, old_state |> Map.get(path)}
   end
 
   defp request_source_if_necesary(nil, %{type: type} = request) do

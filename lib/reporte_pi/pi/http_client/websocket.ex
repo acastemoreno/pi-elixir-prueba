@@ -1,6 +1,7 @@
 defmodule ReportePi.Pi.HttpClient.Websocket do
   use WebSockex
   alias WebSockex.Conn
+  alias ReportePi.Pi.Sources
   import ReportePi.Pi.HttpClient.Request, only: [token: 0]
   @pi Application.get_env(:reporte_pi, ReportePi.Pi)
 
@@ -26,7 +27,8 @@ defmodule ReportePi.Pi.HttpClient.Websocket do
   end
 
   @impl true
-  def terminate(reason, state) do
+  def terminate(reason, %{path: path} = state) do
+    Sources.remove_channel(%{path: path})
     IO.puts("\nSocket Terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
   end
