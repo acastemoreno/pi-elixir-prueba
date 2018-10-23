@@ -15,6 +15,7 @@ defmodule ReportePi.Pi.HttpClient.Websocket do
 
   @impl true
   def handle_frame({_type, msg}, %{path: path} = state) do
+    IO.inspect(msg)
     [%{"Items" => items}] = msg |> Poison.decode!() |> Map.get("Items")
     value = items |> Enum.map(&(get_value_and_broadcast(&1, path))) |> List.last
     {:ok, state |> Map.put(:value, value)}
@@ -29,6 +30,7 @@ defmodule ReportePi.Pi.HttpClient.Websocket do
   @impl true
   def terminate(reason, %{path: path} = state) do
     Sources.remove_channel(%{path: path})
+    ReportePiWeb.Endpoint.broadcast "points:" <> path , "new_msg", %{"mensaje" =>"proceso terminado"}
     IO.puts("\nSocket Terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
   end

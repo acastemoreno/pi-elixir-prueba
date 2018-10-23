@@ -20,7 +20,7 @@ defmodule ReportePi.Pi.HttpClient.Request do
   end
 
   def options do
-    [ssl: [{:versions, [:"tlsv1.2"]}]]
+    [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 500]
   end
 
   def process_url(url) do

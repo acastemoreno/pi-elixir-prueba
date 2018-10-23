@@ -10,7 +10,7 @@ defmodule ReportePi.Pi.Sources do
   end
 
   def webid(%{path: path, type: type}) when path |> is_bitstring() and type in @source_types do
-    GenServer.call(__MODULE__, {:webid, %{path: path, type: type}})
+    GenServer.call(__MODULE__, {:webid, %{path: path, type: type}}, 11000)
   end
 
   def webid(arg) do
@@ -19,19 +19,19 @@ defmodule ReportePi.Pi.Sources do
   end
 
   def value(%{path: path, type: type}) when path |> is_bitstring() and type in @source_types do
-    GenServer.call(__MODULE__, {:value, %{path: path, type: type}})
+    GenServer.call(__MODULE__, {:value, %{path: path, type: type}}, 11000)
   end
 
   def value(_), do: {:error, "Argumentos no validos"}
 
   def init_channel(%{path: path, type: type}) when path |> is_bitstring() and type in @source_types do
-    GenServer.call(__MODULE__, {:init_channel, %{path: path, type: type}})
+    GenServer.call(__MODULE__, {:init_channel, %{path: path, type: type}}, 11000)
   end
 
   def init_channel(_), do: {:error, "Argumentos no validos"}
 
   def remove_channel(%{path: path}) when path |> is_bitstring() do
-    GenServer.call(__MODULE__, {:remove_channel, %{path: path}})
+    GenServer.call(__MODULE__, {:remove_channel, %{path: path}}, 11000)
   end
 
   def remove_channel(_), do: {:error, "Argumentos no validos"}
@@ -127,7 +127,7 @@ defmodule ReportePi.Pi.Sources do
   defp request_channel({:error, _msg} = response_state, _path), do: response_state
   defp request_channel({:ok, %{channel_pid: nil, webid: webid} = source, _update_state?}, path) do
     {:ok, channel_pid} =
-      ReportePi.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <> "/channel", path)
+      ReportePi.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <> "/channel?heartbeatRate=5", path)
     {:ok, channel_pid, source |> Map.put(:channel_pid, channel_pid), true}
   end
   defp request_channel({:ok, %{channel_pid: channel_pid} = source, update_state?}, _path) do
@@ -180,11 +180,14 @@ defmodule ReportePi.Pi.Sources do
   # Outside Helper Functions
 
   defp request_webid_and_status(%{path: path, type: type}) do
-    %{body: body, status_code: status_code} =
-      path
-      |> webid_url(type)
-      |> Request.get!(headers(), options())
-    %{webid: body |> Map.get("WebId"), status_code: status_code}
+    case path
+    |> webid_url(type)
+    |> Request.get(headers(), options()) do
+      {:ok, %{body: body, status_code: status_code}} ->
+        %{webid: body |> Map.get("WebId"), status_code: status_code}
+      {:error, %{reason: reason}} ->
+        {:error, reason}
+    end
   end
 
   defp webid_url(path, :attributes) do
