@@ -18,10 +18,8 @@ defmodule ReportePiWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
-    get("/attribute", PiController, :attribute_form)
-    post("/attribute", PiController, :attribute_form_post)
-    get("/point", PiController, :point_form)
-    post("/point", PiController, :point_form_post)
+    get("/source", PiController, :source_form)
+    post("/source", PiController, :source_form_post)
   end
 
   # Other scopes may use custom stacks.

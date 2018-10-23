@@ -18,23 +18,23 @@ defmodule ReportePi.Pi do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def webid(%{path: path} = map) when path |> is_bitstring() do
+  def webid(path) when path |> is_bitstring() do
     case path |> String.contains?("|") do
       true ->
-        Sources.webid(map)
+        Sources.webid(%{path: path, type: :attributes})
       false ->
-        Sources.webid(map)
+        Sources.webid(%{path: path, type: :points})
     end
   end
 
   def webid(_path), do: {:error, "Argumento no valido"}
 
-  def value(%{path: path} = map) when path |> is_bitstring() do
+  def value(path) when path |> is_bitstring() do
     case path |> String.contains?("|") do
       true ->
-        Sources.value(map)
+        Sources.value(%{path: path, type: :attributes})
       false ->
-        Sources.value(map)
+        Sources.value(%{path: path, type: :points})
     end
   end
 
