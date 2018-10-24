@@ -2,8 +2,7 @@ defmodule ReportePiWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "attributes:*", ReportePiWeb.AttributesChannel
-  channel "points:*", ReportePiWeb.PointsChannel
+  channel "sources:*", ReportePiWeb.SourcesChannel
 
   ## Transports
   transport(:websocket, Phoenix.Transports.WebSocket)

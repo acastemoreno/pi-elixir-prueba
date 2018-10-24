@@ -8,7 +8,7 @@ defmodule ReportePi.Pi.ApiClient do
   @impl true
   def init(_arg) do
     children = [
-      {ReportePi.Pi.ApiClient.DynamicWebsocket, []}
+      {ReportePi.Pi.ApiClient.Channel, []}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
