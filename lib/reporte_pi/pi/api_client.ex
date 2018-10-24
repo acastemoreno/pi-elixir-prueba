@@ -1,4 +1,4 @@
-defmodule ReportePi.Pi.HttpClient do
+defmodule ReportePi.Pi.ApiClient do
   use Supervisor, type: :supervisor
 
   def start_link(_arg) do
@@ -8,7 +8,7 @@ defmodule ReportePi.Pi.HttpClient do
   @impl true
   def init(_arg) do
     children = [
-      {ReportePi.Pi.HttpClient.DynamicWebsocket, []}
+      {ReportePi.Pi.ApiClient.DynamicWebsocket, []}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

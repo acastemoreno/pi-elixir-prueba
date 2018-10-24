@@ -1,6 +1,6 @@
-defmodule ReportePi.Pi.HttpClient.DynamicWebsocket do
+defmodule ReportePi.Pi.ApiClient.Channel do
   use DynamicSupervisor
-  alias ReportePi.Pi.HttpClient.Websocket
+  alias ReportePi.Pi.ApiClient.Websocket
 
   def start_link(_args) do
     DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)

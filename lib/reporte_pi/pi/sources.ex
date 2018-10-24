@@ -1,31 +1,42 @@
 defmodule ReportePi.Pi.Sources do
   use GenServer, type: :worker
-  alias ReportePi.Pi.HttpClient.Request
-  import ReportePi.Pi.HttpClient.Request, only: [headers: 0, options: 0]
-  @source_types [:attributes, :points]
+  alias ReportePi.Pi.ApiClient.{Request, Channel}
+  import ReportePi.Pi.ApiClient.Request, only: [headers: 0, options: 0]
 
   # Client Functions
   def start_link(_arg) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  def webid(%{path: path, type: type}) when path |> is_bitstring() and type in @source_types do
-    GenServer.call(__MODULE__, {:webid, %{path: path, type: type}}, 11000)
+  def webid(path) when path |> is_bitstring() do
+    case path |> String.contains?("|") do
+      true ->
+        GenServer.call(__MODULE__, {:webid, %{path: path, type: :attributes}}, 11000)
+      false ->
+        GenServer.call(__MODULE__, {:webid, %{path: path, type: :points}}, 11000)
+    end
   end
-
-  def webid(arg) do
-    IO.inspect(arg)
+  def webid(_arg) do
      {:error, "Argumentos no validos"}
   end
 
-  def value(%{path: path, type: type}) when path |> is_bitstring() and type in @source_types do
-    GenServer.call(__MODULE__, {:value, %{path: path, type: type}}, 11000)
+  def value(path) when path |> is_bitstring() do
+    case path |> String.contains?("|") do
+      true ->
+        GenServer.call(__MODULE__, {:value, %{path: path, type: :attributes}}, 11000)
+      false ->
+        GenServer.call(__MODULE__, {:value, %{path: path, type: :points}}, 11000)
+    end
   end
-
   def value(_), do: {:error, "Argumentos no validos"}
 
-  def init_channel(%{path: path, type: type}) when path |> is_bitstring() and type in @source_types do
-    GenServer.call(__MODULE__, {:init_channel, %{path: path, type: type}}, 11000)
+  def init_channel(path) when path |> is_bitstring() do
+    case path |> String.contains?("|") do
+      true ->
+        GenServer.call(__MODULE__, {:init_channel, %{path: path, type: :attributes}}, 11000)
+      false ->
+        GenServer.call(__MODULE__, {:init_channel, %{path: path, type: :points}}, 11000)
+    end
   end
 
   def init_channel(_), do: {:error, "Argumentos no validos"}
@@ -126,8 +137,7 @@ defmodule ReportePi.Pi.Sources do
 
   defp request_channel({:error, _msg} = response_state, _path), do: response_state
   defp request_channel({:ok, %{channel_pid: nil, webid: webid} = source, _update_state?}, path) do
-    {:ok, channel_pid} =
-      ReportePi.Pi.HttpClient.DynamicWebsocket.start_child("streams/" <> webid <> "/channel?heartbeatRate=5", path)
+    {:ok, channel_pid} = Channel.start_child("streams/" <> webid <> "/channel?heartbeatRate=5", path)
     {:ok, channel_pid, source |> Map.put(:channel_pid, channel_pid), true}
   end
   defp request_channel({:ok, %{channel_pid: channel_pid} = source, update_state?}, _path) do

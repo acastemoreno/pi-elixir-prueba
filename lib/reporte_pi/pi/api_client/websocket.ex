@@ -1,8 +1,8 @@
-defmodule ReportePi.Pi.HttpClient.Websocket do
+defmodule ReportePi.Pi.ApiClient.Websocket do
   use WebSockex
   alias WebSockex.Conn
   alias ReportePi.Pi.Sources
-  import ReportePi.Pi.HttpClient.Request, only: [token: 0]
+  import ReportePi.Pi.ApiClient.Request, only: [token: 0]
   @pi Application.get_env(:reporte_pi, ReportePi.Pi)
 
   def start_link(url: url, path: path) do

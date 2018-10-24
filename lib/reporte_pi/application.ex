@@ -14,7 +14,7 @@ defmodule ReportePi.Application do
       supervisor(ReportePiWeb.Endpoint, []),
       # Start your own worker by calling: ReportePi.Worker.start_link(arg1, arg2, arg3)
       # worker(ReportePi.Worker, [arg1, arg2, arg3]),
-      {ReportePi.Pi, []}
+      {ReportePi.Pi.Supervisor, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

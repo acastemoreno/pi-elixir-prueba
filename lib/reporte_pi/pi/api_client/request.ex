@@ -1,4 +1,4 @@
-defmodule ReportePi.Pi.HttpClient.Request do
+defmodule ReportePi.Pi.ApiClient.Request do
   use HTTPoison.Base
   @pi Application.get_env(:reporte_pi, ReportePi.Pi)
   @expected_fields ~w(
