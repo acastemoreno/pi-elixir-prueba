@@ -45,7 +45,8 @@ defmodule ReportePi.Mixfile do
       {:bcrypt_elixir, "~> 0.12"},
       {:distillery, "~> 2.0"},
       {:httpoison, "~> 1.0"},
-      {:websockex, "~> 0.4.0"}
+      {:websockex, "~> 0.4.0"},
+      {:interceptor, "~> 0.1.0"}
     ]
   end
 

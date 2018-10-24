@@ -62,3 +62,6 @@ config :reporte_pi, ReportePi.Pi,
   url_websocket: "wss://192.168.1.206/piwebapi/",
   user: "Administrator",
   password: "Rockwell01"
+
+config :interceptor,
+  configuration: ReportePi.Interceptor.Config

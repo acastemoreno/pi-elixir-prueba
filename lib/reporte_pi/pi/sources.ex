@@ -178,7 +178,6 @@ defmodule ReportePi.Pi.Sources do
   end
 
   # Outside Helper Functions
-
   defp request_webid_and_status(%{path: path, type: type}) do
     case path
     |> webid_url(type)
