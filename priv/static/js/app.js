@@ -1865,10 +1865,11 @@ var init_channel = function init_channel(topic) {
   });
   channel.join().receive("ok", function (resp) {
     console.log("Joined successfully", resp);
+  }).receive("timeout", function () {
+    return console.log("Networking issue. Still waiting...");
   }).receive("error", function (resp) {
     console.log("Unable to join", resp);
     console.log("Retrying...");
-    channel.leave();
     setTimeout(function () {
       init_channel(topic);
     }, 11000);

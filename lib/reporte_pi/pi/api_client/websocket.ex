@@ -12,13 +12,16 @@ defmodule ReportePi.Pi.ApiClient.Websocket do
     WebSockex.start_link(conn, __MODULE__, %{path: path})
   end
 
-
   @impl true
   def handle_frame({_type, msg}, %{path: path} = state) do
-    IO.inspect(msg)
-    [%{"Items" => items}] = msg |> Poison.decode!() |> Map.get("Items")
-    value = items |> Enum.map(&(get_value_and_broadcast(&1, path))) |> List.last
-    {:ok, state |> Map.put(:value, value)}
+    with [%{"Items" => items}] <- msg |> Poison.decode!() |> Map.get("Items") do
+      value = items |> Enum.map(&(get_value_and_broadcast(&1, path))) |> List.last
+      {:ok, state |> Map.put(:value, value)}
+    else
+      [] ->
+        ReportePiWeb.Endpoint.broadcast "sources:" <> path , "new_msg", %{"resp" => "heartbeat"}
+        {:ok, state}
+    end
   end
 
   @impl true
@@ -30,13 +33,13 @@ defmodule ReportePi.Pi.ApiClient.Websocket do
   @impl true
   def terminate(reason, %{path: path} = state) do
     Sources.remove_channel(%{path: path})
-    ReportePiWeb.Endpoint.broadcast "points:" <> path , "new_msg", %{"mensaje" =>"proceso terminado"}
+    ReportePiWeb.Endpoint.broadcast "sources:" <> path , "new_msg", %{"mensaje" =>"proceso terminado"}
     IO.puts("\nSocket Terminating:\n#{inspect(reason)}\n\n#{inspect(state)}\n")
     exit(:normal)
   end
 
   defp get_value_and_broadcast(%{"Value" => value, "Timestamp" => timestamp}, path) do
-    ReportePiWeb.Endpoint.broadcast "points:" <> path , "new_msg", %{"value" => value, "date" => timestamp}
+    ReportePiWeb.Endpoint.broadcast "sources:" <> path , "new_msg", %{"value" => value, "date" => timestamp}
     value
   end
 end

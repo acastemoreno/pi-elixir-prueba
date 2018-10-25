@@ -63,10 +63,10 @@ let init_channel = function(topic) {
   })
   channel.join()
     .receive("ok", resp => { console.log("Joined successfully", resp) })
+    .receive("timeout", () => console.log("Networking issue. Still waiting...") )
     .receive("error", resp => {
       console.log("Unable to join", resp)
       console.log("Retrying...")
-      channel.leave()
       setTimeout(function() {
         init_channel(topic);
       }, 11000);
