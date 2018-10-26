@@ -5,7 +5,7 @@ defmodule ReportePi.Pi.ApiClient.Websocket do
   import ReportePi.Pi.ApiClient.Request, only: [token: 0]
   @pi Application.get_env(:reporte_pi, ReportePi.Pi)
 
-  def start_link(url: url, path: path) do
+  def start_link(url, path) do
     conn =
       Conn.new(@pi[:url_websocket] <> url, extra_headers: [Authorization: "Basic #{token()}"])
 
@@ -25,9 +25,10 @@ defmodule ReportePi.Pi.ApiClient.Websocket do
   end
 
   @impl true
-  def handle_cast({:send, {type, msg} = frame}, state) do
-    IO.puts("Sending #{type} frame with payload: #{msg}")
-    {:reply, frame, state}
+  def handle_cast(:trap_exit, state) do
+    Process.flag(:trap_exit, true)
+    IO.puts("Seteado trap_exit")
+    {:ok, state}
   end
 
   @impl true

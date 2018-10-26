@@ -140,7 +140,8 @@ defmodule ReportePi.Pi.Sources do
     case Channel.start_child("streams/" <> webid <> "/channel?heartbeatRate=5", path) do
       {:ok, channel_pid} ->
         {:ok, channel_pid, source |> Map.put(:channel_pid, channel_pid), true}
-      {:error, _message} ->
+      {:error, message} ->
+        IO.inspect message
         {:error, "cannot stablish websocket conection with pi"}
     end
   end
