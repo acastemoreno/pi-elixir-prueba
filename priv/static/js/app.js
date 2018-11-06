@@ -1877,7 +1877,7 @@ var init_channel = function init_channel(topic) {
 };
 
 init_channel("sources:\\\\PISRV1\\SINUSOIDU");
-
+//init_channel("sources:\\\\PISRV1")
 exports.default = socket;
 });
 

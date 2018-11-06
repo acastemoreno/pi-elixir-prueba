@@ -74,5 +74,5 @@ let init_channel = function(topic) {
 }
 
 init_channel("sources:\\\\PISRV1\\SINUSOIDU")
-
+//init_channel("sources:\\\\PISRV1")
 export default socket

@@ -1,4 +1,4 @@
-defmodule ReportePi.Pi.ApiClient.Websocket do
+defmodule ReportePi.Pi.ApiClient.Channel.Websocket do
   use WebSockex
   alias WebSockex.Conn
   alias ReportePi.Pi.Sources
@@ -27,7 +27,6 @@ defmodule ReportePi.Pi.ApiClient.Websocket do
   @impl true
   def handle_cast(:trap_exit, state) do
     Process.flag(:trap_exit, true)
-    IO.puts("Seteado trap_exit")
     {:ok, state}
   end
 

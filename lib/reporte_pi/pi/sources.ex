@@ -137,7 +137,7 @@ defmodule ReportePi.Pi.Sources do
 
   defp request_channel({:error, _msg} = response_state, _path), do: response_state
   defp request_channel({:ok, %{channel_pid: nil, webid: webid} = source, _update_state?}, path) do
-    case Channel.start_child("streams/" <> webid <> "/channel?heartbeatRate=5", path) do
+    case Channel.start_channel("streams/" <> webid <> "/channel?heartbeatRate=5", path) do
       {:ok, channel_pid} ->
         {:ok, channel_pid, source |> Map.put(:channel_pid, channel_pid), true}
       {:error, message} ->
